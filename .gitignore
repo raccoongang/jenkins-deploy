@@ -1,1 +1,5 @@
 *.retry
+inventories/hosts.ini
+inventories/group_vars/openedx-ci/main.yml
+.vaultfile
+vault/*

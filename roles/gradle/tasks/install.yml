@@ -4,16 +4,6 @@
     pkg: unzip
     state: present
 
-- name: Check that the gradle folder exists
-  stat:
-    path: "/opt/gradle/{{ gradle_folder }}"
-  register: gradle_folder
-
-- name: Install Gradle
-  include_task: "install.yml"
-  when: gradle_folder.stat.exists == false
-  become: yes
-
 - name: Download Gradle {{ gradle_version }}
   get_url: 
     dest: /tmp/
@@ -29,9 +19,15 @@
   unarchive:
     src: "/tmp/{{ gradle_zipfile }}"
     dest: "/opt/gradle/"
+    remote_src: true
 
 - name: Create symlink to Gradle
   file:
-    src: /opt/gradle/{{ gradle_folder }}/bin/gradle
-    dest: /usr/bin/gradle
+    src: "{{ gradle_folder }}/bin/gradle"
+    dest: "/usr/bin/gradle"
     state: link
+
+- name: Remove downloaded file
+  file:
+    path: "/tmp/{{ gradle_zipfile }}"
+    state: absent

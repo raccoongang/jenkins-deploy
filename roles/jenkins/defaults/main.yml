@@ -7,7 +7,9 @@ local_env_vars:
   PLUGIN_CONFIG: 'test_data/plugins.yml'
   LC_ALL: 'C'
 
-repo_dir: "{{ user_dir }}/jenkins-configuration/"
+jenkins_user: "edxjenkins"
+jenkins_user_homedir: "/opt/{{ jenkins_user }}"
+repo_dir: "{{ jenkins_user_homedir }}/jenkins-configuration/"
 
 # hub.docker.com credentials
 docker_id: ''

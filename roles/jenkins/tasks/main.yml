@@ -3,42 +3,14 @@
   apt:
     name: python-pip
     update_cache: yes
+  become: yes
 
 - name: Install docker-py
   pip:
     name: docker-py
+  become: yes
 
-- name: Make requirements 
-  shell: make requirements
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-
-- name: Make plugins 
-  shell: make plugins
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-
-- name: Log into DockerHub
-  docker_login:
-    username: "{{ docker_id }}"
-    password: "{{ docker_pass }}"
-
-- name: Build a dockerfile
-  shell: make build
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-
-- name: Run Docker container
-  shell: make run.container
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-
-- name: Run Jenkins
-  shell: make run.jenkins
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
+- name: Install edX tests jenkins
+  include: "edx-jenkins.yml"
+  become: yes
+  become_user: "{{ jenkins_user }}"

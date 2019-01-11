@@ -1,7 +1,7 @@
 ---
 
 - name: Include OS-specific variables.
-  include_vars: "{{item}}"
+  include_vars: "{{ item }}"
   with_first_found:
     - files:
       - "{{ ansible_distribution }}.{{ ansible_lsb.codename }}.yml"
@@ -14,18 +14,14 @@
     - docker
 
 - include: install.deb.yml
+  become: yes
   when: ansible_os_family == "Debian"
   tags:
     - install
     - docker
 
-- include: install.yum.yml
-  when: ansible_os_family == "RedHat"
-  tags:
-    - install
-    - docker
-
 - include: docker-compose.yml
+  become: yes
   when: docker_install_docker_compose
   tags:
     - install
@@ -37,6 +33,7 @@
     name: "{{ item }}"
     groups: "docker"
     append: True
+  become: yes
   with_items: "{{ docker_users }}"
   when: docker_users
   tags:
@@ -53,6 +50,7 @@
     day: "{{ item.schedule[2] }}"
     month: "{{ item.schedule[3] }}"
     weekday: "{{ item.schedule[4] }}"
+  become: yes
   with_items: "{{ docker_cron_tasks }}"
   when: docker_cron_tasks
   tags:

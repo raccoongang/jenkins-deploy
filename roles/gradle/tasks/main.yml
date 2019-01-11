@@ -6,10 +6,10 @@
 
 - name: Check that the gradle folder exists
   stat:
-    path: "/opt/gradle/{{ gradle_folder }}"
-  register: gradle_folder
+    path: "{{ gradle_folder }}"
+  register: gradle_folder_test
 
 - name: Install Gradle
-  include_tasks: "install.yml"
-  when: gradle_folder.stat.exists == false
+  include: "install.yml"
   become: yes
+  when: not gradle_folder_test.stat.exists
