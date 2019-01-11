@@ -27,3 +27,9 @@ ansible-playbook -i inventories/hosts.ini install.yml
 ## Verify:
 
 Open with browser http://IP_ADDRESS
+
+
+## TO DO:
+
+* add role for nginx installation to proxify HTTP requests to 8080 port
+* add role for seting up HTTPS certificates
