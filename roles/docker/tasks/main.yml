@@ -1,0 +1,60 @@
+---
+
+- name: Include OS-specific variables.
+  include_vars: "{{item}}"
+  with_first_found:
+    - files:
+      - "{{ ansible_distribution }}.{{ ansible_lsb.codename }}.yml"
+      - "{{ ansible_distribution }}.yml"
+      - "{{ ansible_os_family }}.yml"
+      - "common-default.yml"
+      paths: vars
+  tags:
+    - install
+    - docker
+
+- include: install.deb.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+    - docker
+
+- include: install.yum.yml
+  when: ansible_os_family == "RedHat"
+  tags:
+    - install
+    - docker
+
+- include: docker-compose.yml
+  when: docker_install_docker_compose
+  tags:
+    - install
+    - docker
+    - docker_compose
+
+- name: Add specific users to "docker" group
+  user:
+    name: "{{ item }}"
+    groups: "docker"
+    append: True
+  with_items: "{{ docker_users }}"
+  when: docker_users
+  tags:
+    - install
+    - docker
+    - docker_users
+
+- name: Create cron tasks for Docker commands
+  cron:
+    name: "{{ item.name }}"
+    job: "{{ item.job }}"
+    minute: "{{ item.schedule[0] }}"
+    hour: "{{ item.schedule[1] }}"
+    day: "{{ item.schedule[2] }}"
+    month: "{{ item.schedule[3] }}"
+    weekday: "{{ item.schedule[4] }}"
+  with_items: "{{ docker_cron_tasks }}"
+  when: docker_cron_tasks
+  tags:
+    - install
+    - docker

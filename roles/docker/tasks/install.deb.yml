@@ -1,0 +1,123 @@
+---
+
+- name: Get kernel version
+  command: "uname -r"
+  register: uname_out
+  tags:
+    - install
+    - docker
+
+- name: Set kernel version for trusty
+  set_fact:
+    uname_r: "{{ uname_out.stdout }}"
+  tags:
+    - install
+    - docker
+
+- name: Remove docker.io version
+  apt:
+    name: "{{ item }}"
+    state: "absent"
+  with_items:
+    - docker
+    - docker-engine
+    - docker.io
+  when: docker_edition == "ce"
+  tags:
+    - install
+    - docker
+
+- name: Install Docker and role dependencies
+  apt:
+    name: "{{ item }}"
+    state: "present"
+    install_recommends: False
+    update_cache: True
+    cache_valid_time: "{{ docker_apt_cache_time }}"
+  with_items: "{{ docker_common_packages }}"
+  tags:
+    - install
+    - docker
+
+- name: Get upstream APT GPG key
+  apt_key:
+    url: "{{ docker_gpg_key_url }}"
+    state: "present"
+  tags:
+    - install
+    - docker
+
+- name: Configure upstream APT repository
+  apt_repository:
+    repo: "{{ docker_repository }}"
+    state: "present"
+    update_cache: True
+  tags:
+    - install
+    - docker
+
+- name: Install Docker
+  apt:
+    name: "docker{{ '-'~docker_edition if docker_edition != '' else '' }}{{ '='~docker_version if docker_version != '' else '' }}"
+    state: "present"
+    update_cache: True
+    force: True
+    install_recommends: False
+    cache_valid_time: "{{ docker_apt_cache_time }}"
+    allow_unauthenticated: True
+  tags:
+    - install
+    - docker
+
+- name: Remove Upstart config file
+  file:
+    path: "/etc/default/docker"
+    state: "absent"
+  tags:
+    - install
+    - docker
+
+- name: Ensure systemd directory exists
+  file:
+    path: "/etc/systemd/system"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags:
+    - install
+    - docker
+
+- name: Generate systemd unit file
+  template:
+    src: "etc/systemd/system/docker.service.j2"
+    dest: "/etc/systemd/system/docker.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  register: docker_register_systemd_service
+  tags:
+    - install
+    - docker
+
+- name: Reload systemd daemon
+  command: "systemctl daemon-reload"
+  notify: ["Restart Docker"]
+  when: (docker_register_systemd_service and
+         docker_register_systemd_service is changed)
+  tags:
+    - install
+    - docker
+
+- name: Add specific users to "docker" group
+  user:
+    name: "{{ item }}"
+    groups: "docker"
+    append: True
+  with_items: "{{ docker_users }}"
+  when: docker_users
+  tags:
+    - install
+    - docker
+    - docker_users
+

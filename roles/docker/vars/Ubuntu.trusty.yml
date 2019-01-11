@@ -1,0 +1,10 @@
+uname_r: ""
+
+docker_common_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - cron
+  - linux-image-extra-"{{ uname_r }}"
+  - linux-image-extra-virtual
