@@ -1,0 +1,37 @@
+---
+- name: Install unzip
+  apt:
+    pkg: unzip
+    state: present
+
+- name: Check that the gradle folder exists
+  stat:
+    path: "/opt/gradle/{{ gradle_folder }}"
+  register: gradle_folder
+
+- name: Install Gradle
+  include_task: "install.yml"
+  when: gradle_folder.stat.exists == false
+  become: yes
+
+- name: Download Gradle {{ gradle_version }}
+  get_url: 
+    dest: /tmp/
+    url: https://services.gradle.org/distributions/{{ gradle_zipfile }}
+
+- name: Create dir
+  file: 
+    path: /opt/gradle
+    state: directory
+    mode: 0755
+
+- name: Extract zip
+  unarchive:
+    src: "/tmp/{{ gradle_zipfile }}"
+    dest: "/opt/gradle/"
+
+- name: Create symlink to Gradle
+  file:
+    src: /opt/gradle/{{ gradle_folder }}/bin/gradle
+    dest: /usr/bin/gradle
+    state: link

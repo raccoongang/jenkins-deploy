@@ -4,8 +4,8 @@
   gather_facts: yes
   become: yes
   roles:
-   - docker
-   - java-openjdk
-   - gradle
-   - git_clone
-   - jenkins
+    - { role: docker, tags: ['docker'] }
+    - { role: java-openjdk, tags: ['java'] }
+    - { role: gradle, tags: ['gradle'] }
+    - { role: git_clone, tags: ['git_clone'] }
+    - { role: jenkins, tags: ['jenkins'] }
