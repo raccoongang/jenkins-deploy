@@ -1,0 +1,12 @@
+---
+local_env_vars:
+  JENKINS_VERSION: 'jenkins_2.89.4'
+  CONTAINER_NAME: 'jenkins'
+  JENKINS_WAR_SOURCE: 'https://s3.amazonaws.com/edx-testeng-tools/jenkins'
+  CONFIG_PATH: 'test_data'
+  PLUGIN_CONFIG: 'test_data/plugins.yml'
+  LC_ALL: 'C'
+
+repo_dir: /home/raccoon/jenkins-configuration/
+docker_id: edxraccoon
+docker_pass: hFZgg1AxnNywOyd6bB2u

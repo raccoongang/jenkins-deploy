@@ -1,0 +1,27 @@
+COMMON_GIT_PROTOCOL: 'https'  # https|ssh
+COMMON_GIT_MIRROR: 'gitlab.raccoongang.com' # git server hostname
+#COMMON_GIT_PATH: 'raccoongang'  # git path prefix
+COMMON_GIT_PATH: 'maksym.sanin'  # git path prefix
+COMMON_GIT_REPO: 'jenkins-configuration' # git repo
+COMMON_GIT_VERSION: 'rg-ci-test' #git branch
+COMMON_GIT_IDENTITY_PATH: "{{ playbook_dir }}/vault/id_rsa"
+
+git_clone_dest_dir: "{{ ansible_env.HOME }}/{{ COMMON_GIT_REPO }}"
+git_home: "{{ ansible_env.HOME }}"
+repo_dest_dir: /home/{{ deploy_user }}/{{ COMMON_GIT_REPO }}
+deploy_user: "raccoon"
+repo_owner: "{{ deploy_user }}"
+repo_group: "{{ repo_owner }}"
+
+GIT_REPOS:
+  - PROTOCOL: "{{ COMMON_GIT_PROTOCOL }}"
+    DOMAIN: "{{ COMMON_GIT_MIRROR }}"
+    PATH: "{{ COMMON_GIT_PATH }}"
+    REPO: "{{ COMMON_GIT_REPO }}"
+    VERSION: "{{ COMMON_GIT_VERSION }}"
+    DESTINATION: "{{ repo_dest_dir }}"
+    SSH_KEY_PATH: "{{ COMMON_GIT_IDENTITY_PATH }}"
+
+GIT_CLONE_NO_LOGGING: false
+
+

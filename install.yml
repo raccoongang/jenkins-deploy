@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+   - docker
+   - java-openjdk
+   - gradle
+   - git_clone
+   - jenkins

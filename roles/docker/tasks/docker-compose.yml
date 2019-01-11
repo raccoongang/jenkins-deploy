@@ -1,0 +1,34 @@
+---
+
+- name: Get latest docker-compose version
+  shell: "curl -Ls -o /dev/null -w %{url_effective} https://github.com/docker/compose/releases/latest | awk -F / '{ print $NF; }'"
+  args:
+    warn: False
+  register: docker_compose_version_get
+  when: docker_compose_version == ""
+  tags:
+    - install
+    - docker
+    - docker_compose
+
+- name: Set docker-compose to latest version
+  set_fact:
+    docker_compose_version: "{{ docker_compose_version if docker_compose_version != '' else docker_compose_version_get.stdout }}"
+  tags:
+    - install
+    - docker
+    - docker_compose
+
+- name: Install Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
+    dest: "/usr/local/bin/docker-compose"
+    force: True
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  when: docker_install_docker_compose
+  tags:
+    - install
+    - docker
+    - docker_compose
