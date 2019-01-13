@@ -1,11 +1,19 @@
 ---
-
 - hosts: all
   gather_facts: yes
-  become: yes
+  pre_tasks:
+    - name: Add jenkins system account
+      user:
+        name: "{{ jenkins_user }}"
+        shell: /bin/bash
+        state: present
+        home: "{{ jenkins_user_homedir }}"
+        createhome: yes
+      become: yes
+
   roles:
-   - docker
-   - java-openjdk
-   - gradle
-   - git_clone
-   - jenkins
+    - { role: docker, tags: ['docker'], docker_users: ["{{ jenkins_user }}"] }
+    - { role: java-openjdk, tags: ['java'] }
+    - { role: gradle, tags: ['gradle'] }
+    - { role: git_clone, tags: ['git_clone'] }
+    - { role: jenkins, tags: ['jenkins'] }

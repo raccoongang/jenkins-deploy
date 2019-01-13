@@ -4,58 +4,13 @@
     name: python-pip
     update_cache: yes
   become: yes
-  tags: jenkins
-
-- name: Make requirements 
-  shell: make requirements
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-  become: yes
-  become_user: raccoon
-  tags: jenkins
-
-- name: Make plugins 
-  shell: make plugins
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-  become: yes
-  become_user: raccoon
-  tags: jenkins
 
 - name: Install docker-py
   pip:
     name: docker-py
-  tags: jenkins
-
-- name: Log into DockerHub
-  docker_login:
-    username: "{{ docker_id }}"
-    password: "{{ docker_pass }}"
   become: yes
-  tags: jenkins
 
-- name: Build a dockerfile
-  shell: make build
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
+- name: Install edX tests jenkins
+  include: "edx-jenkins.yml"
   become: yes
-  tags: jenkins
-
-- name: Run Docker container
-  shell: make run.container
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-  become: yes
-  tags: jenkins
-
-- name: Run Jenkins
-  shell: make run.jenkins
-  args: 
-    chdir: "{{ repo_dir }}"
-  environment: "{{ local_env_vars }}"
-  become: yes
-  tags: jenkins
+  become_user: "{{ jenkins_user }}"

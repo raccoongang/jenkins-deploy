@@ -1,0 +1,15 @@
+# hub.docker.com credentials used to pull
+# openedx jenkins and jenkins-worker images
+docker_id: ''
+docker_pass: ''
+
+# user used to deploy, configure and run jenkins docker containers
+jenkins_user: "{{ ansible_ssh_user }}"
+jenkins_user_homedir: "/home/{{ jenkins_user }}"
+
+# setting for git clone the `jenkins-configuration` repository
+COMMON_GIT_MIRROR: 'github.com'
+COMMON_GIT_PATH: 'edx'
+COMMON_GIT_REPO: 'jenkins-configuration'
+COMMON_GIT_VERSION: 'master'
+COMMON_GIT_IDENTITY_PATH: "{{ playbook_dir }}/vault/id_rsa.jenkins-configuration"

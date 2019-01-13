@@ -16,12 +16,8 @@
 
 - name: Remove docker.io version
   apt:
-    name: "{{ item }}"
+    name: ['docker', 'docker-engine', 'docker.io']
     state: "absent"
-  with_items:
-    - docker
-    - docker-engine
-    - docker.io
   when: docker_edition == "ce"
   tags:
     - install
@@ -29,12 +25,11 @@
 
 - name: Install Docker and role dependencies
   apt:
-    name: "{{ item }}"
+    name: "{{ docker_common_packages }}"
     state: "present"
     install_recommends: False
     update_cache: True
     cache_valid_time: "{{ docker_apt_cache_time }}"
-  with_items: "{{ docker_common_packages }}"
   tags:
     - install
     - docker
@@ -120,4 +115,3 @@
     - install
     - docker
     - docker_users
-

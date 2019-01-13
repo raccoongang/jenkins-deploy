@@ -1,0 +1,33 @@
+---
+- name: Install unzip
+  apt:
+    pkg: unzip
+    state: present
+
+- name: Download Gradle {{ gradle_version }}
+  get_url: 
+    dest: /tmp/
+    url: https://services.gradle.org/distributions/{{ gradle_zipfile }}
+
+- name: Create dir
+  file: 
+    path: /opt/gradle
+    state: directory
+    mode: 0755
+
+- name: Extract zip
+  unarchive:
+    src: "/tmp/{{ gradle_zipfile }}"
+    dest: "/opt/gradle/"
+    remote_src: true
+
+- name: Create symlink to Gradle
+  file:
+    src: "{{ gradle_folder }}/bin/gradle"
+    dest: "/usr/bin/gradle"
+    state: link
+
+- name: Remove downloaded file
+  file:
+    path: "/tmp/{{ gradle_zipfile }}"
+    state: absent
