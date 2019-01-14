@@ -8,7 +8,7 @@ COMMON_GIT_IDENTITY_PATH: "{{ playbook_dir }}/vault/id_rsa"
 git_clone_dest_dir: "{{ ansible_env.HOME }}/{{ COMMON_GIT_REPO }}"
 git_home: "{{ ansible_env.HOME }}"
 deploy_user: "{{ jenkins_user }}"
-repo_dest_dir: "/home/{{ deploy_user }}/{{ COMMON_GIT_REPO }}"
+repo_dest_dir: "/opt/{{ deploy_user }}/{{ COMMON_GIT_REPO }}"
 repo_owner: "{{ deploy_user }}"
 repo_group: "{{ repo_owner }}"
 

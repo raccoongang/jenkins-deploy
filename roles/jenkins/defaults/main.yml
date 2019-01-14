@@ -14,3 +14,6 @@ repo_dir: "{{ jenkins_user_homedir }}/jenkins-configuration/"
 # hub.docker.com credentials
 docker_id: ''
 docker_pass: ''
+
+# Number of worker containers
+workers_number: '3'  
